@@ -51,6 +51,22 @@ architecture a_ff of flipFlops is
             end if;
         end process flipFlopJK;
 
-        
+         -- ~~~FLIP-FLOP D~~~ --
+
+         flipFlopD: process(clr, pre, clk)
+         begin
+            if(clr='0') then
+                dQ(1)<='0';
+                dQ(0)<='1';
+            elsif(clk'event and clk='1') then
+                if(pre='1') then
+                    dQ(1)<='1';
+                    dQ(0)<='0';
+                else
+                    dQ(1)<= d;
+                    dQ(0)<= not dQ(1);
+                end if;
+            end if;
+        end process flipFlopD;
 
 end a_ff ; -- arch
