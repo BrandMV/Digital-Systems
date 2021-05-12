@@ -1,6 +1,6 @@
 Cypress C22V10 Jedec Fuse File: ff.jed
 
-This file was created on 05/12/2021 at 13:04:46 
+This file was created on 05/12/2021 at 13:28:27 
 by PLA2JED.EXE    31/03/2000  [v4.02 ] 6.3 IR 35
 
 
@@ -9,7 +9,7 @@ PAL to GAL JEDEC conversion utility - paltogal v3.12  17 November 1992
 Copyright (c) by LATTICE Semiconductor Corp. 1990, 1991, 1992.
 Input File:  ff.jed
 Output File: ffs.jed
-The Date:    Wed May 12 13:05:24 2021
+The Date:    Wed May 12 13:28:43 2021
 
 C22V10*
 QP24*                Number of Pins*

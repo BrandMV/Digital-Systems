@@ -40,7 +40,6 @@ architecture a_ff of ff is
 
          flipFlopJK: process(clr, pre, clk)
          begin
-		 jk = j & k;
             if(clr = '0') then
                 jkQ(1) <= '0';
                 jkQ(0) <= '1';
