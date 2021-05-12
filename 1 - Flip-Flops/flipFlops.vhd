@@ -7,7 +7,7 @@ use IEEE.std_logic_1164.all;
 
 entity flipFlops is
     port(
-        pre, clr, clk, d, t, s, r, j, k, t: in std_logic;
+        pre, clr, clk, d, t, s, r, j, k, t, sel: in std_logic;
         flip: out std_logic_vector(1 downto 0)
     );
 
@@ -19,16 +19,16 @@ architecture a_ff of flipFlops is
 
         flipFlopSR: Process(clr, pre, clk)
         begin
-            if(clr='0') then 
-                srQ(1)<='0';
-                srQ(0)<='1';
-            elsif(clk'event and clk='1') then
-                if(pre='1') then
-                    srQ(1)<='1';
-                    srQ(0)<='0';
+            if(clr = '0') then 
+                srQ(1) <= '0';
+                srQ(0) <= '1';
+            elsif(clk'event and clk = '1') then
+                if(pre = '1') then
+                    srQ(1) <= '1';
+                    srQ(0) <= '0';
                 else
-                    srQ(1)<=s OR ((NOT r) AND srQ(1));  
-                    srQ(0)<= not srQ(1);
+                    srQ(1) <= s OR ((NOT r) AND srQ(1));  
+                    srQ(0) <= not srQ(1);
                 end if;
             end if;
         end process flipFlopSR;
@@ -37,16 +37,16 @@ architecture a_ff of flipFlops is
 
          flipFlopJK: process(clr, pre, clk)
          begin
-            if(clr='0') then
-                jkQ(1)<='0';
-                jkQ(0)<='1';
-            elsif (clk'event and clk='1') then
-                if(pre='1') then
-                    jkQ(1)<='1';
-                    jkQ(0)<='0';
+            if(clr = '0') then
+                jkQ(1) <= '0';
+                jkQ(0) <= '1';
+            elsif (clk'event and clk = '1') then
+                if(pre = '1') then
+                    jkQ(1) <= '1';
+                    jkQ(0) <= '0';
                 else
-                    jkQ(1)<= ((not k) and jkQ(1)) or (j and (not jkQ(1)));
-                    jkQ(0)<= not jkQ(1);
+                    jkQ(1) <= ((not k) and jkQ(1)) or (j and (not jkQ(1)));
+                    jkQ(0) <= not jkQ(1);
                 end if;
             end if;
         end process flipFlopJK;
@@ -55,16 +55,16 @@ architecture a_ff of flipFlops is
 
          flipFlopD: process(clr, pre, clk)
          begin
-            if(clr='0') then
-                dQ(1)<='0';
-                dQ(0)<='1';
-            elsif(clk'event and clk='1') then
-                if(pre='1') then
-                    dQ(1)<='1';
-                    dQ(0)<='0';
+            if(clr = '0') then
+                dQ(1) <= '0';
+                dQ(0) <= '1';
+            elsif(clk'event and clk = '1') then
+                if(pre = '1') then
+                    dQ(1) <= '1';
+                    dQ(0) <= '0';
                 else
-                    dQ(1)<= d;
-                    dQ(0)<= not dQ(1);
+                    dQ(1) <= d;
+                    dQ(0) <= not dQ(1);
                 end if;
             end if;
         end process flipFlopD;
@@ -73,19 +73,30 @@ architecture a_ff of flipFlops is
 
          flipFlopT: process(clr, pre, clk)
          begin
-            if(clr='0') then
-                tQ(1)<='0';
-                tQ(0)<='1';
-            elsif(clk'event and clk='1') then
-                if(pre='1') then
-                    tQ(1)<='1';
-                    tQ(0)<='0';
+            if(clr = '0') then
+                tQ(1) <= '0';
+                tQ(0) <= '1';
+            elsif(clk'event and clk = '1') then
+                if(pre = '1') then
+                    tQ(1) <= '1';
+                    tQ(0) <= '0';
                 else
-                    tQ(1)<= t xor tQ(1);
-                    tQ(0)<= not tQ(1);
+                    tQ(1) <= t xor tQ(1);
+                    tQ(0) <= not tQ(1);
                 end if;
             end if;
         end process flipFlopT;
 
+         -- ~~~MUX~~~ --
+
+         MUX: process(sel)
+         begin
+            case sel is
+                when "00" => flip <= dQ;
+                when "01" => flip <= srQ;
+                when "10" => flip <= jkQ;
+                when others => flip <= tQ;
+            end case;
+        end process MUX;
 
 end a_ff ; -- arch
