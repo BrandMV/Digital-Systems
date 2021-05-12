@@ -2,17 +2,20 @@
 -- ==============     FLIP FLOPS     =================== --
 -- ===================================================== --
 
-library library IEEE;
+library IEEE;
 use IEEE.std_logic_1164.all;
 
-entity flipFlops is
+entity ff is
     port(
-        pre, clr, clk, d, t, s, r, j, k, t, sel: in std_logic;
+        pre, clr, clk, d, t, s, r, j, k: in std_logic;
+		sel: in std_logic_vector(1 downto 0);
         flip: out std_logic_vector(1 downto 0)
     );
+end ff;
 
-architecture a_ff of flipFlops is
+architecture a_ff of ff is
     SIGNAL srQ, jkQ, dQ, tQ: STD_LOGIC_VECTOR(1 DOWNTO 0);
+
     begin
 
         -- ~~~FLIP-FLOP SR~~~ --
@@ -37,6 +40,7 @@ architecture a_ff of flipFlops is
 
          flipFlopJK: process(clr, pre, clk)
          begin
+		 jk = j & k;
             if(clr = '0') then
                 jkQ(1) <= '0';
                 jkQ(0) <= '1';
@@ -81,22 +85,16 @@ architecture a_ff of flipFlops is
                     tQ(1) <= '1';
                     tQ(0) <= '0';
                 else
-                    tQ(1) <= t xor tQ(1);
-                    tQ(0) <= not tQ(1);
+					tQ(1) <= t xor tQ(1);
+					tQ(0) <= not tQ(1);
                 end if;
             end if;
         end process flipFlopT;
 
          -- ~~~MUX~~~ --
-
-         MUX: process(sel)
-         begin
-            case sel is
-                when "00" => flip <= dQ;
-                when "01" => flip <= srQ;
-                when "10" => flip <= jkQ;
-                when others => flip <= tQ;
-            end case;
-        end process MUX;
-
-end a_ff ; -- arch
+        flip <= dQ when sel = "00" else
+				srQ when sel = "01" else
+				jkQ when sel = "10" else
+				tQ;
+      
+end a_ff; -- arch
