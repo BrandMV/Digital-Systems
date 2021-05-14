@@ -9,18 +9,17 @@ entity ff is
     port(
         pre, clr, clk, d, t, s, r, j, k: in std_logic;
 		sel: in std_logic_vector(1 downto 0);
-        flip: out std_logic_vector(1 downto 0)
+		flip: out std_logic_vector(1 downto 0);
+        srQ, jkQ, dQ, tQ: inout std_logic_vector(1 downto 0)
     );
 end ff;
 
 architecture a_ff of ff is
-    SIGNAL srQ, jkQ, dQ, tQ: STD_LOGIC_VECTOR(1 DOWNTO 0);
-
-    begin
+  begin
 
         -- ~~~FLIP-FLOP SR~~~ --
 
-        flipFlopSR: Process(clr, pre, clk)
+        flipFlopSR: Process(clr, pre, clk, s, r)
         begin
             if(clr = '0') then 
                 srQ(1) <= '0';
@@ -31,7 +30,7 @@ architecture a_ff of ff is
                     srQ(0) <= '0';
                 else
                     srQ(1) <= s OR ((NOT r) AND srQ(1));  
-                    srQ(0) <= not srQ(1);
+                    srQ(0) <= not (s OR ((NOT r) AND srQ(1)));
                 end if;
             end if;
         end process flipFlopSR;
@@ -49,7 +48,7 @@ architecture a_ff of ff is
                     jkQ(0) <= '0';
                 else
                     jkQ(1) <= ((not k) and jkQ(1)) or (j and (not jkQ(1)));
-                    jkQ(0) <= not jkQ(1);
+                    jkQ(0) <= not(((not k) and jkQ(1)) or (j and (not jkQ(1))));
                 end if;
             end if;
         end process flipFlopJK;
@@ -67,7 +66,7 @@ architecture a_ff of ff is
                     dQ(0) <= '0';
                 else
                     dQ(1) <= d;
-                    dQ(0) <= not dQ(1);
+                    dQ(0) <= not d;
                 end if;
             end if;
         end process flipFlopD;
@@ -85,7 +84,7 @@ architecture a_ff of ff is
                     tQ(0) <= '0';
                 else
 					tQ(1) <= t xor tQ(1);
-					tQ(0) <= not tQ(1);
+					tQ(0) <= not (t xor tQ(1));
                 end if;
             end if;
         end process flipFlopT;
@@ -96,4 +95,4 @@ architecture a_ff of ff is
 				jkQ when sel = "10" else
 				tQ;
       
-end a_ff; -- arch
+end a_ff; 
