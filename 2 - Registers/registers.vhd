@@ -26,14 +26,15 @@ architecture A_reg of reg is
                 case c is
                     when "00" => aux <= dato;
                     when "01" =>
-                        ciclo: for i in (0 to 6) loop
+                        ciclo: for i in 0 to 6 loop
                             aux(i) <= q(i+1);
                         end loop ciclo;
                             aux(7) <= ecd;
                     when "10" =>
-                        ciclo: for i in (7 downto 1) loop
+                        ciclo: for i in 7 downto 1 loop
                             aux(i) <= q(i-1);
                         end loop ciclo;
+                        aux(0) <= eci;
                     when others => aux <= q;
                 end case;
             end process MUX;
