@@ -9,7 +9,7 @@ entity counter is
     port(
         clk, clr, c: in std_logic;
         d: out std_logic_vector(2 downto 0);
-        q: in std_logic_vector(2 downto 0)
+        q: inout std_logic_vector(2 downto 0)
     );
 end counter;
 
@@ -33,6 +33,7 @@ architecture A_counter of counter is
                 end if;
             end process;
 
-            d <= q;
+            q <= aux;
+        
 
     end A_counter;

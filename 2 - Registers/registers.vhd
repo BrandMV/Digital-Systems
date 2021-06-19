@@ -1,49 +1,41 @@
--- ===================================================== --
--- ==============      Registers     =================== --
--- ===================================================== --
-library ieee;
-use ieee.std_logic_1164.all;
+-- ========================================================== --
+-- ==============      3 Bits Counter     =================== --
+-- ========================================================== --
 
-entity reg is
+library IEEE;
+use IEEE.std_logic_1164.all;
+
+entity counter is
     port(
-            clk, clr, ecd, eci: in std_logic;
-            c: in std_logic_vector (1 downto 0);
-            dato: in std_logic_vector (7 downto 0);
-            q:inout std_logic_vector (7 downto 0)
+        clk, clr, c: in std_logic;
+		q: in std_logic_vector(2 downto 0);
+        d: out std_logic_vector(2 downto 0)
+        
     );
-end reg;
+end counter;
 
-architecture A_reg of reg is
-    signal aux: std_logic_vector (7 downto 0);
+architecture A_counter of counter is
+    signal aux: std_logic_vector (2 downto 0);
     begin
 
-        -- ~~~MUX PROCESS~~~ --
-
-        MUX: process(c, clk, clr)
+        Counter: process(clr, clk, c)
             begin
-				if( clr = '0' ) then
-					aux <= "00000000";
-				elsif( clk'event and clk='1' ) then
-	                case c is  
-	                    when "00" => aux <= dato;
-	                    when "01" =>
-							aux(7) <= ecd;
-	                        for i in 0 to 6 loop
-	                            aux(i) <= aux(i+1);
-	                        end loop;
-	                    when "10" =>
-	                        for i in 7 downto 1 loop
-	                            aux(i) <= aux(i-1);
-	                        end loop;
-							aux(0) <= eci;
-	                    when others => 
-							aux <= q;
-	                end case;
-				end if;
-            end process MUX;
-		
+                if( clr = '0') then
+                    aux <= "000";
+                elsif ( clk'event and clk = '1') then
+                    case c is
+                        when '0' =>
+                            aux(2) <= (c and q(2)) or (q(2) and (not q(1))) or (q(2) and (not q(0))) or ((not c) and (not q(2)) and q(1) and q(0));
+                            aux(1) <= (q(1) and (not q(0))) or (c and q(1)) or ((not c) and (not q(1)) and q(0));
+                            aux(0) <= c xnor q(0);
+                        when others =>
+                            aux <= q;
+                    end case;
+                end if;
+            end process Counter;
 
-	q <= aux;
-end A_reg; 
+       d <= aux;
+
+    end A_counter;
                 
                             
